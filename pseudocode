@@ -1,0 +1,143 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+
+Table Persons {
+  id integer [primary key]
+  fullName varchar
+  dateOfBirth date
+  addressId varchar
+  joinDate timestamp
+  status varchar [note: "whether it is staff/ attendees/ choreographer"]
+  subscriptionID integer [note: "only if it is attendees"]
+  About text [note: "only for staffs"]
+}
+//probably lookup into staff and members
+
+Table address {
+  id integer
+  streetAddress1 integer
+  streetAddress2 integer
+  city varchar
+  state varchar
+  zipCode timestamp 
+}
+
+Table Staff_Team {
+  staff_id integer unique
+  person_id integer
+  position varchar
+  about text
+  danceStyleID integer [note: "if position is choreographers"]
+  status varchar
+  startDate timestamp
+}
+
+Table danceStyle{
+  id integer [primary key]
+  styleName varchar
+  about text
+  origin varchar
+}
+
+Table subscriptions{
+  id integer [primary key]
+  name varchar
+  numberOfDays integer
+  price money 
+}
+
+Table shows{
+  showName varchar
+  addressID integer
+  performingDate datetime
+  teamID varchar  
+}
+
+Table trainedTeam{
+  teamID integer [primary key]
+  teamName varchar
+  memberID varchar
+}
+
+Table goodies{
+  id integer
+  title varchar
+  subTitle varchar
+  price money
+  numberOfStock integer
+  productFrom varchar
+}
+
+Table studios {
+  studioID integer
+  studioName varchar
+  area integer
+  dimension_l integer
+  dimension_b integer
+}
+
+Table classes{
+  danceStyleID integer
+  level varchar
+  choreographer integer
+  startFrom timestamp
+  endTo timestamp
+  studioID integer
+  attendees varchar
+}
+
+Table orders{
+  id integer
+  orderDate datetime
+  person_id integer
+  goodies_id integer
+  quantity integer
+}
+
+Table blog_posts {
+  id integer [primary key]
+  staff_id integer
+  title varchar
+  body text [note: 'Content of the post']
+  user_id integer
+  status varchar
+  created_at timestamp
+}
+
+Table summer_camps{
+  id integer [primary key]
+  title varchar
+  about text
+  location varchar
+  tags varchar
+  startDate datetime
+  toDate datetime
+}
+
+Table camp_attendes{
+  campID integer
+  attendeeID integer
+  accomodation varchar
+}
+Ref: Staff_Team.person_id > danceStyle.id // one staff can teach many styles
+
+Ref: Persons.id - address.id
+
+Ref: Persons.id < Staff_Team.person_id
+
+Ref: Persons.subscriptionID > subscriptions.id //confusion
+
+Ref: summer_camps.id < camp_attendes.campID
+
+Ref: Staff_Team.staff_id < blog_posts.staff_id
+
+Ref: goodies.id < orders.goodies_id
+
+Ref: classes.danceStyleID > danceStyle.id
+
+Ref: studios.studioID < classes.studioID
+
+Ref: trainedTeam.teamID < shows.teamID
+
+Ref: trainedTeam.memberID > Persons.id
